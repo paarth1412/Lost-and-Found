@@ -43,19 +43,6 @@ An administrator verifies claims and updates item status to ensure correctness a
 
 ---
 
-## Installation Setup
-
-The following software tools were installed during the initial DBMS lab session:
-
-- IntelliJ IDEA (IDE for backend development)
-- Windows Subsystem for Linux (WSL) with Ubuntu
-- Node.js (LTS version)
-- Git and GitHub for version control and documentation
-
-These tools provide the required environment for database interaction and application development.
-
----
-
 ## Database Setup
 
 - MariaDB is used as the relational database management system
