@@ -138,7 +138,7 @@ Frontend development, authentication systems, and deployment are outside the sco
 
 ## Authors
 
-* Pranav Jain
 * Paarth Jawaharani
+* Pranav Jain
 
 ---
