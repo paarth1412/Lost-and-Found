@@ -1,34 +1,44 @@
-USE `lost_and_found`;
-SET FOREIGN_KEY_CHECKS = 0;
-TRUNCATE TABLE audit_log;
-TRUNCATE TABLE claims;
-TRUNCATE TABLE found_reports;
-TRUNCATE TABLE lost_reports;
-TRUNCATE TABLE items;
-TRUNCATE TABLE users;
-SET FOREIGN_KEY_CHECKS = 1;
+-- ============================================================
+--  Lost and Found Management System
+--  sample_data.sql — Insert sample records for testing
+-- ============================================================
 
-INSERT INTO users (name, email, phone, password_hash, role) VALUES
-  ('Pranav Jain', 'pranav.jain@example.com', '+91-70000-00001', '$2b$10$placeholderpranav', 'user');
-SET @pranav_id = LAST_INSERT_ID();
+USE lost_and_found;
 
-INSERT INTO users (name, email, phone, password_hash, role) VALUES
-  ('Paarth Jawaharani', 'paarth.jawaharani@example.com', '+91-70000-00002', '$2b$10$placeholderpaarth', 'user');
-SET @paarth_id = LAST_INSERT_ID();
+-- ========== USERS ==========
+INSERT INTO users (name, email, phone, role) VALUES
+('Admin User',   'admin@college.com',  '9000000001', 'admin'),
+('Paarth J',     'paarth@college.com', '9000000002', 'user'),
+('Pranav Jain',  'pranav@college.com', '9000000003', 'user'),
+('Riya Shah',    'riya@college.com',   '9000000004', 'user'),
+('Arjun Mehta',  'arjun@college.com',  '9000000005', 'user');
 
-INSERT INTO users (name, email, phone, password_hash, role) VALUES
-  ('Lab Admin', 'admin@example.com', '+91-70000-00000', '$2b$10$placeholderadmin', 'admin');
-SET @admin_id = LAST_INSERT_ID();
+-- ========== ITEMS ==========
+INSERT INTO items (name, description, category, status, reported_by) VALUES
+('Black Umbrella',    'Small foldable black umbrella',   'Accessories', 'lost',    2),
+('Student ID Card',   'ID card belonging to a student',  'Documents',   'claimed', 3),
+('Blue Water Bottle', 'Steel bottle with blue cap',      'Other',       'lost',    4),
+('Earphones',         'White wired earphones in a case', 'Electronics', 'found',   5),
+('Leather Wallet',    'Brown wallet with some cash',     'Wallet',      'claimed', 2),
+('Physics Textbook',  'Class 12 Physics NCERT book',     'Books',       'lost',    3),
+('Keys',              'Set of 3 keys on a red keychain', 'Keys',        'found',   4);
 
-INSERT INTO items (title, description, category, image_url, location, status, reported_by, metadata) VALUES
-  ('College ID Card', 'Red college ID card with Pranav Jain printed; small scratch on top-right corner', 'Identity', NULL, 'Near Library', 'lost', @pranav_id, '{"color":"red","mark":"scratch_top_right","identifier":"roll:CS2026-45"}');
-SET @item1_id = LAST_INSERT_ID();
+-- ========== LOST REPORTS ==========
+INSERT INTO lost_reports (item_id, user_id, lost_location, lost_date) VALUES
+(1, 2, 'Main Gate',            '2025-03-01'),
+(3, 4, 'Cafeteria',            '2025-03-05'),
+(6, 3, 'Library Reading Room', '2025-03-10');
 
-INSERT INTO lost_reports (item_id, reporter_id, location, report_date, contact_info, notes) VALUES
-  (@item1_id, @pranav_id, 'Central Library - main steps', '2026-01-28', 'pranav.jain@example.com', 'Lost after evening class; has student ID and library tag');
+-- ========== FOUND REPORTS ==========
+INSERT INTO found_reports (item_id, user_id, found_location, found_date) VALUES
+(2, 3, 'Parking Lot',   '2025-03-02'),
+(4, 5, 'Computer Lab',  '2025-03-06'),
+(5, 4, 'Classroom 204', '2025-03-08'), 
+(7, 4, 'Admin Office',  '2025-03-11');
 
-INSERT INTO found_reports (item_id, found_by, location, report_date, contact_info, notes) VALUES
-  (@item1_id, @paarth_id, 'Library Entrance Bench', '2026-01-29', 'paarth.jawaharani@example.com', 'Found on bench near entrance; kept at help desk');
-
-INSERT INTO claims (item_id, claimant_id, status, requested_at, notes) VALUES
-  (@item1_id, @pranav_id, 'requested', '2026-01-29 10:15:00', 'Claiming based on name printed on card and small scratch on top-right corner');
+-- ========== CLAIMS ==========
+INSERT INTO claims (item_id, claimed_by, status, notes, reviewed_by) VALUES
+(2, 3, 'approved',  'Student verified with duplicate ID', 1),
+(4, 2, 'requested', NULL,                                 NULL),
+(5, 3, 'approved',  'Owner identified wallet contents',   1),
+(7, 5, 'rejected',  'Could not verify ownership',         1);
