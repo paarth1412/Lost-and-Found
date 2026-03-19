@@ -48,14 +48,29 @@ The system is designed to:
 
 ```
 
+## Project Structure
+
 Lost-and-Found/
 │
 ├── README.md
-├── db/
+│
+├── database/
 │   ├── schema.sql
 │   ├── sample_data.sql
 │   └── queries.sql
-└── src/ (optional backend)
+│
+├── backend/
+│   ├── server.js
+│   ├── db.js
+│   └── package.json
+│
+├── frontend/
+│   ├── index.html
+│   ├── add_lost.html
+│   ├── add_found.html
+│   ├── claim.html
+│   ├── script.js
+│   └── style.css
 
 ````
 
