@@ -3,6 +3,19 @@
 
 const API = 'http://localhost:3000'
 
+// ── Auth ──────────────────────────────────────────────────
+
+function logout() {
+  sessionStorage.clear()
+  window.location.href = 'login.html'
+}
+
+function requireLogin() {
+  if (!sessionStorage.getItem('user_id')) {
+    window.location.href = 'login.html'
+  }
+}
+
 // ── Fetch helpers ─────────────────────────────────────────
 
 async function getJSON(endpoint) {
@@ -40,8 +53,8 @@ function statusBadge(status) {
 function showAlert(id, message, type = 'success') {
   const el = document.getElementById(id)
   if (!el) return
-  el.textContent  = message
-  el.className    = `alert alert-${type}`
+  el.textContent   = message
+  el.className     = `alert alert-${type}`
   el.style.display = 'block'
   setTimeout(() => { el.style.display = 'none' }, 3500)
 }
@@ -79,6 +92,26 @@ async function populateItemSelect(selectId, statusFilter = null) {
   }
 }
 
+// ── Inject nav user info + logout ─────────────────────────
+
+function initNav() {
+  requireLogin()
+  const name = sessionStorage.getItem('user_name') || ''
+  const role = sessionStorage.getItem('user_role') || ''
+  const nav  = document.querySelector('nav')
+  if (!nav) return
+
+  const userEl = document.createElement('div')
+  userEl.style.cssText = 'display:flex; align-items:center; gap:0.75rem;'
+  userEl.innerHTML = `
+    <span style="font-family:var(--mono); font-size:0.72rem; color:var(--text-muted); letter-spacing:0.05em;">
+      ${name} <span style="color:var(--accent);">[${role}]</span>
+    </span>
+    <button class="btn btn-danger btn-sm" onclick="logout()">Logout</button>
+  `
+  nav.appendChild(userEl)
+}
+
 // ── Mark current nav link active ──────────────────────────
 
 function markCurrentNav() {
@@ -91,4 +124,7 @@ function markCurrentNav() {
   })
 }
 
-document.addEventListener('DOMContentLoaded', markCurrentNav)
+document.addEventListener('DOMContentLoaded', () => {
+  markCurrentNav()
+  initNav()
+})
