@@ -6,7 +6,7 @@ const mysql = require('mysql2')
 const db = mysql.createConnection({
   host:     'localhost',
   user:     'root',
-  password: '',           // ← put your MariaDB password here
+  password: 'Pranav@9100',           // ← put your MariaDB password here
   database: 'lost_and_found'
 })
 

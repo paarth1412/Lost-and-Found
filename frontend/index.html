@@ -67,8 +67,8 @@
   async function loadStats() {
     try {
       const [items, claims] = await Promise.all([
-        getJSON('/items'),
-        getJSON('/claims/status/requested')
+        getJSON('/items'),                        // ← FIX: was 'http://localhost:3000/items'
+        getJSON('/claims/status/requested')       // ← FIX: was 'http://localhost:3000/claims/status/requested'
       ])
       allItems = items
       document.getElementById('count-lost').textContent    = items.filter(i => i.status === 'lost').length
