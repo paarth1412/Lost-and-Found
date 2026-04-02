@@ -6,7 +6,7 @@
 USE lost_and_found;
 
 -- ─────────────────────────────────────────
--- USERS (passwords are all: Test@1234)
+-- USERS
 -- ─────────────────────────────────────────
 INSERT INTO users (name, email, password, phone, role) VALUES
 ('Arjun Sharma',     'arjun.sharma@campus.edu',    '$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2uheWG/igi.', '9876543201', 'admin'),
