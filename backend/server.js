@@ -11,6 +11,9 @@ const PORT = 3000
 app.use(cors())
 app.use(express.json())
 
+const path = require('path')
+app.use(express.static(path.join(__dirname, '../frontend')))
+
 // ── USERS ─────────────────────────────────────────────────
 
 // GET all users
