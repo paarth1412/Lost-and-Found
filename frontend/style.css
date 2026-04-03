@@ -1,308 +1,216 @@
-/* ── Reset & Variables ─────────────────────────────────── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* ── Reset ───────────────────────── */
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
+/* ── Theme ───────────────────────── */
 :root {
-  --bg:         #0a0a0a;
-  --bg-2:       #111;
-  --bg-card:    #161616;
-  --accent:     #c8f135;
-  --text:       #f0f0f0;
-  --text-muted: #888;
-  --border:     #222;
-  --danger:     #f13535;
-  --success:    #35f17a;
-  --font:       'Syne', sans-serif;
-  --mono:       'DM Mono', monospace;
+  --bg: #f5f7fa;
+  --card: #ffffff;
+  --primary: #4a90e2;
+  --primary-dark: #357abd;
+  --text: #2c3e50;
+  --muted: #7f8c8d;
+  --border: #e0e6ed;
+  --success: #2ecc71;
+  --danger: #e74c3c;
+
+  --font: 'Inter', sans-serif;
 }
 
+/* ── Body ───────────────────────── */
 body {
+  font-family: var(--font);
   background: var(--bg);
   color: var(--text);
-  font-family: var(--font);
-  min-height: 100vh;
 }
 
-/* ── Nav ───────────────────────────────────────────────── */
+/* ── Nav ───────────────────────── */
 nav {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background: rgba(10,10,10,0.92);
-  backdrop-filter: blur(10px);
+  background: white;
   border-bottom: 1px solid var(--border);
   padding: 1rem 2rem;
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
 }
 
 .nav-logo {
-  font-size: 1.2rem;
-  font-weight: 800;
-  color: var(--accent);
-  letter-spacing: 0.05em;
+  font-weight: 700;
+  color: var(--primary);
   text-decoration: none;
-}
-
-.nav-links {
-  display: flex;
-  gap: 0.5rem;
 }
 
 .nav-links a {
-  color: var(--text-muted);
+  margin-left: 1rem;
   text-decoration: none;
-  font-size: 0.82rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  padding: 0.4rem 0.9rem;
-  border: 1px solid transparent;
-  border-radius: 3px;
-  transition: all 0.2s;
+  color: var(--muted);
+  font-size: 0.9rem;
 }
 
-.nav-links a:hover,
-.nav-links a.active {
-  color: var(--accent);
-  border-color: var(--accent);
+.nav-links a:hover {
+  color: var(--primary);
 }
 
-/* ── Page wrapper ──────────────────────────────────────── */
-.page { max-width: 1100px; margin: 0 auto; padding: 3rem 2rem; }
+/* ── Layout ─────────────────────── */
+.page {
+  max-width: 1000px;
+  margin: auto;
+  padding: 2rem;
+}
 
 .page-title {
-  font-size: 2.5rem;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  margin-bottom: 0.4rem;
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
 }
 
 .page-sub {
-  font-family: var(--mono);
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  margin-bottom: 2.5rem;
+  color: var(--muted);
+  margin-bottom: 2rem;
 }
 
-/* ── Stats bar (index only) ────────────────────────────── */
+/* ── Cards ─────────────────────── */
+.form-card, .stat-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+}
+
+/* ── Stats ─────────────────────── */
 .stats {
   display: flex;
-  gap: 1.5rem;
-  margin-bottom: 3rem;
+  gap: 1rem;
+  margin-bottom: 2rem;
   flex-wrap: wrap;
 }
 
 .stat-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  padding: 1.2rem 2rem;
-  min-width: 130px;
-  transition: border-color 0.2s;
+  flex: 1;
+  min-width: 120px;
+  text-align: center;
 }
 
-.stat-card:hover { border-color: var(--accent); }
-
 .stat-num {
-  font-size: 2.2rem;
-  font-weight: 800;
-  color: var(--accent);
-  line-height: 1;
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: var(--primary);
 }
 
 .stat-label {
-  font-family: var(--mono);
-  font-size: 0.72rem;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  margin-top: 0.3rem;
+  font-size: 0.8rem;
+  color: var(--muted);
 }
 
-/* ── Table ─────────────────────────────────────────────── */
-.table-wrap {
-  overflow-x: auto;
+/* ── Form ─────────────────────── */
+.form-group {
+  margin-bottom: 1rem;
+}
+
+label {
+  font-size: 0.8rem;
+  color: var(--muted);
+  display: block;
+  margin-bottom: 0.3rem;
+}
+
+input, select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
   border: 1px solid var(--border);
-  border-radius: 4px;
-  margin-bottom: 2rem;
+}
+
+/* ── Buttons ───────────────────── */
+.btn {
+  padding: 10px 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: var(--primary-dark);
+}
+
+.btn-success {
+  border: 1px solid var(--success);
+  color: var(--success);
+  background: transparent;
+}
+
+.btn-danger {
+  border: 1px solid var(--danger);
+  color: var(--danger);
+  background: transparent;
+}
+
+/* ── Table ───────────────────── */
+.table-wrap {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  font-family: var(--mono);
-  font-size: 0.83rem;
 }
 
-thead tr {
-  background: var(--bg-2);
-  border-bottom: 1px solid var(--border);
+thead {
+  background: #f0f4f8;
 }
 
-thead th {
-  padding: 0.8rem 1rem;
+th, td {
+  padding: 12px;
   text-align: left;
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--text-muted);
-  white-space: nowrap;
 }
 
-tbody tr {
-  border-bottom: 1px solid var(--border);
-  transition: background 0.15s;
+tbody tr:hover {
+  background: #f9fbfd;
 }
 
-tbody tr:last-child { border-bottom: none; }
-tbody tr:hover { background: var(--bg-2); }
-
-tbody td {
-  padding: 0.75rem 1rem;
-  color: var(--text-muted);
-  vertical-align: middle;
-}
-
-tbody td:first-child { color: var(--text); }
-
-/* ── Status badge ──────────────────────────────────────── */
-.badge {
-  display: inline-block;
-  font-size: 0.68rem;
-  padding: 0.2rem 0.6rem;
-  border-radius: 2px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
-
-.badge-lost      { background: rgba(241,53,53,0.15);  color: var(--danger);  border: 1px solid rgba(241,53,53,0.3); }
-.badge-found     { background: rgba(200,241,53,0.1);  color: var(--accent);  border: 1px solid rgba(200,241,53,0.3); }
-.badge-claimed   { background: rgba(53,241,122,0.1);  color: var(--success); border: 1px solid rgba(53,241,122,0.3); }
-.badge-requested { background: rgba(241,161,53,0.1);  color: #f1a135;        border: 1px solid rgba(241,161,53,0.3); }
-.badge-approved  { background: rgba(53,241,122,0.1);  color: var(--success); border: 1px solid rgba(53,241,122,0.3); }
-.badge-rejected  { background: rgba(241,53,53,0.15);  color: var(--danger);  border: 1px solid rgba(241,53,53,0.3); }
-
-/* ── Form ──────────────────────────────────────────────── */
-.form-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  padding: 2rem;
-  max-width: 540px;
-}
-
-.form-group {
-  margin-bottom: 1.2rem;
-}
-
-.form-group label {
-  display: block;
-  font-family: var(--mono);
-  font-size: 0.72rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--text-muted);
-  margin-bottom: 0.4rem;
-}
-
-.form-group input,
-.form-group select,
-.form-group textarea {
-  width: 100%;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 3px;
-  color: var(--text);
-  font-family: var(--mono);
-  font-size: 0.88rem;
-  padding: 0.65rem 0.9rem;
-  outline: none;
-  transition: border-color 0.2s;
-}
-
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-  border-color: var(--accent);
-}
-
-.form-group select option { background: var(--bg-2); }
-
-/* ── Buttons ───────────────────────────────────────────── */
-.btn {
-  display: inline-block;
-  padding: 0.65rem 1.5rem;
-  border-radius: 3px;
-  font-family: var(--font);
-  font-size: 0.85rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  cursor: pointer;
-  border: none;
-  transition: all 0.2s;
-}
-
-.btn-primary  { background: var(--accent); color: #000; }
-.btn-primary:hover  { background: #b5db2a; }
-.btn-danger   { background: transparent; color: var(--danger); border: 1px solid var(--danger); }
-.btn-danger:hover   { background: rgba(241,53,53,0.1); }
-.btn-success  { background: transparent; color: var(--success); border: 1px solid var(--success); }
-.btn-success:hover  { background: rgba(53,241,122,0.1); }
-.btn-sm { padding: 0.3rem 0.8rem; font-size: 0.75rem; }
-
-/* ── Alert ─────────────────────────────────────────────── */
+/* ── Alerts ───────────────────── */
 .alert {
-  font-family: var(--mono);
-  font-size: 0.83rem;
-  padding: 0.8rem 1rem;
-  border-radius: 3px;
-  margin-bottom: 1.5rem;
+  padding: 10px;
+  margin-bottom: 1rem;
+  border-radius: 6px;
   display: none;
 }
 
-.alert-success { background: rgba(53,241,122,0.1); color: var(--success); border: 1px solid rgba(53,241,122,0.3); }
-.alert-error   { background: rgba(241,53,53,0.1);  color: var(--danger);  border: 1px solid rgba(241,53,53,0.3); }
-
-/* ── Filter row ────────────────────────────────────────── */
-.filter-row {
-  display: flex;
-  gap: 0.5rem;
-  margin-bottom: 1.5rem;
-  flex-wrap: wrap;
+.alert-success {
+  background: #eafaf1;
+  color: var(--success);
 }
 
+.alert-error {
+  background: #fdecea;
+  color: var(--danger);
+}
+
+/* ── Filters ───────────────────── */
 .filter-btn {
-  font-family: var(--mono);
-  font-size: 0.75rem;
-  padding: 0.35rem 0.9rem;
+  padding: 6px 12px;
+  border-radius: 6px;
   border: 1px solid var(--border);
-  background: transparent;
-  color: var(--text-muted);
-  border-radius: 3px;
+  background: white;
   cursor: pointer;
-  transition: all 0.2s;
 }
 
-.filter-btn:hover,
 .filter-btn.active {
-  border-color: var(--accent);
-  color: var(--accent);
+  background: var(--primary);
+  color: white;
 }
 
-/* ── Loading ───────────────────────────────────────────── */
-.loading {
-  font-family: var(--mono);
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  padding: 2rem;
-  text-align: center;
-}
-
-/* ── Responsive ─────────────────────────────────────────── */
+/* ── Responsive ───────────────── */
 @media (max-width: 600px) {
-  .nav-links a { font-size: 0.72rem; padding: 0.3rem 0.6rem; }
-  .page { padding: 2rem 1rem; }
-  .page-title { font-size: 1.8rem; }
+  .page {
+    padding: 1rem;
+  }
 }
