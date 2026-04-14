@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Lost and Found Management System
 
 A DBMS-based application for managing lost and found items within a campus environment.
@@ -196,6 +195,4 @@ Frontend and backend are minimal and only for demonstration purposes.
 * Pranav Jain
 
 ---
-=======
-# lost_and_found_2
->>>>>>> c944c3c4dc81ac6202f3f02f42605259d5277e3f
+
