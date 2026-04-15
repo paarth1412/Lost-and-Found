@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Report Lost Item</title>
+  <title>Report Lost Item — L&F System</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
 
 <nav>
-  <a class="nav-logo" href="index.html">L&F System</a>
+  <a class="nav-logo" href="index.html">L&amp;F System</a>
   <div class="nav-links">
     <a href="index.html">Dashboard</a>
     <a href="add_lost.html">Report Lost</a>
@@ -21,25 +21,31 @@
 </nav>
 
 <div class="page">
-  <h1 class="page-title">Report Lost Item</h1>
-  <p class="page-sub">Fill in the details of the item you lost.</p>
+
+  <header style="margin-bottom: 2rem;">
+    <h1 class="page-title">Report Lost Item</h1>
+    <p class="page-sub">Fill in the details of the item you lost. We'll help you find it.</p>
+  </header>
 
   <div id="alert" class="alert"></div>
 
   <div class="form-card">
-    <!-- Step 1: add item -->
+
+    <!-- Item Info -->
+    <p style="font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); margin-bottom:1rem;">Item Details</p>
+
     <div class="form-group">
       <label>Item Name *</label>
       <input type="text" id="item-name" placeholder="e.g. Black Umbrella"/>
     </div>
     <div class="form-group">
       <label>Description</label>
-      <input type="text" id="item-desc" placeholder="Brief description"/>
+      <input type="text" id="item-desc" placeholder="Brief description to help identify the item"/>
     </div>
     <div class="form-group">
       <label>Category</label>
       <select id="item-cat">
-        <option value="">— select —</option>
+        <option value="">— select a category —</option>
         <option>Electronics</option>
         <option>Clothing</option>
         <option>Accessories</option>
@@ -50,82 +56,147 @@
         <option>Other</option>
       </select>
     </div>
-    <div class="form-group">
-      <label>Your Name (Reported By) *</label>
-      <select id="reported-by"></select>
+
+    <hr/>
+
+    <!-- Reporter Info -->
+    <p style="font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); margin-bottom:1rem;">Reported By</p>
+
+    <div class="form-grid-2">
+      <div class="form-group" style="margin-bottom:0;">
+        <label>Your Name *</label>
+        <input type="text" id="reporter-name" placeholder="Full name"/>
+      </div>
+      <div class="form-group" style="margin-bottom:0;">
+        <label>Phone Number * <span style="font-weight:400; text-transform:none; letter-spacing:0;">(10 digits)</span></label>
+        <input type="text" id="reporter-phone" placeholder="e.g. 9876543210" maxlength="10"/>
+      </div>
     </div>
 
-    <hr style="border-color:var(--border);margin:1.5rem 0"/>
+    <hr/>
 
-    <!-- Step 2: lost report details -->
-    <div class="form-group">
-      <label>Where was it lost? *</label>
-      <input type="text" id="lost-location" placeholder="e.g. Library, Cafeteria"/>
-    </div>
-    <div class="form-group">
-      <label>Date Lost *</label>
-      <input type="date" id="lost-date"/>
+    <!-- Loss Details -->
+    <p style="font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); margin-bottom:1rem;">Lost Where &amp; When</p>
+
+    <div class="form-grid-2">
+      <div class="form-group" style="margin-bottom:0;">
+        <label>Location *</label>
+        <input type="text" id="lost-location" placeholder="e.g. Library, Cafeteria, Block B"/>
+      </div>
+      <div class="form-group" style="margin-bottom:0;">
+        <label>Date Lost *</label>
+        <input type="date" id="lost-date"/>
+      </div>
     </div>
 
-    <button class="btn btn-primary" onclick="submitLostReport()">Submit Lost Report</button>
+    <div style="margin-top:1.75rem;">
+      <button class="btn btn-primary" onclick="submitLostReport()">Submit Lost Report</button>
+    </div>
+
   </div>
 
-  <!-- Recent lost reports -->
-  <h2 style="font-size:1.3rem;font-weight:700;margin:3rem 0 1rem;">Recent Lost Reports</h2>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr><th>#</th><th>Item</th><th>Lost At</th><th>Date</th><th>Reported By</th></tr>
-      </thead>
-      <tbody id="lost-body">
-        <tr><td colspan="5" class="loading">Loading…</td></tr>
-      </tbody>
-    </table>
+  <!-- Recent Lost Reports -->
+  <div style="margin-top: 3rem;">
+    <div class="section-header">
+      <h2>Recent Lost Reports</h2>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Item</th>
+            <th>Lost At</th>
+            <th>Date</th>
+            <th>Reported By</th>
+            <th>Phone</th>
+          </tr>
+        </thead>
+        <tbody id="lost-body">
+          <tr><td colspan="6" class="loading">Loading…</td></tr>
+        </tbody>
+      </table>
+    </div>
   </div>
+
 </div>
 
 <script src="script.js"></script>
 <script>
-  populateUserSelect('reported-by')
-
   async function loadLostReports() {
     try {
-      const data = await getJSON('/lost-reports')
+      const data  = await getJSON('/lost-reports')
       const tbody = document.getElementById('lost-body')
-      if (!data.length) { tbody.innerHTML = '<tr><td colspan="5" class="loading">No lost reports yet.</td></tr>'; return }
+      if (!data.length) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6">
+              <div class="empty-state">
+                <div class="empty-icon">◎</div>
+                <p>No lost reports yet.</p>
+              </div>
+            </td>
+          </tr>`
+        return
+      }
       tbody.innerHTML = data.map(r => `
         <tr>
-          <td>${r.lost_id}</td>
-          <td>${r.item_name}</td>
+          <td><span style="font-family:var(--mono); font-size:0.75rem; color:var(--muted-light);">${r.lost_id}</span></td>
+          <td style="font-weight:500;">${r.item_name}</td>
           <td>${r.lost_location || '—'}</td>
-          <td>${r.lost_date ? new Date(r.lost_date).toLocaleDateString() : '—'}</td>
-          <td>${r.user_name}</td>
+          <td style="color:var(--muted); font-size:0.82rem;">${r.lost_date ? new Date(r.lost_date).toLocaleDateString('en-IN', {day:'2-digit', month:'short', year:'numeric'}) : '—'}</td>
+          <td>${r.reporter_name}</td>
+          <td><span style="font-family:var(--mono); font-size:0.78rem;">${r.reporter_phone || '—'}</span></td>
         </tr>`).join('')
     } catch (e) {
-      document.getElementById('lost-body').innerHTML = '<tr><td colspan="5" class="loading">Backend not connected.</td></tr>'
+      document.getElementById('lost-body').innerHTML =
+        '<tr><td colspan="6" class="loading">Backend not connected.</td></tr>'
     }
   }
 
   async function submitLostReport() {
-    const name     = document.getElementById('item-name').value.trim()
-    const desc     = document.getElementById('item-desc').value.trim()
-    const category = document.getElementById('item-cat').value
-    const reportedBy = document.getElementById('reported-by').value
-    const location = document.getElementById('lost-location').value.trim()
-    const date     = document.getElementById('lost-date').value
+    const name          = document.getElementById('item-name').value.trim()
+    const desc          = document.getElementById('item-desc').value.trim()
+    const category      = document.getElementById('item-cat').value
+    const reporterName  = document.getElementById('reporter-name').value.trim()
+    const reporterPhone = document.getElementById('reporter-phone').value.trim()
+    const location      = document.getElementById('lost-location').value.trim()
+    const date          = document.getElementById('lost-date').value
 
-    if (!name || !reportedBy || !location || !date) {
-      showAlert('alert', 'Please fill in all required fields.', 'error'); return
+    if (!name || !reporterName || !reporterPhone || !location || !date) {
+      showAlert('alert', 'Please fill in all required fields.', 'error')
+      return
+    }
+    if (!isValidPhone(reporterPhone)) {
+      showAlert('alert', 'Phone number must be exactly 10 digits.', 'error')
+      return
     }
 
     try {
-      // 1. Add item
-      const item = await postJSON('/items', { name, description: desc, category, status: 'lost', reported_by: reportedBy })
-      // 2. File lost report
-      await postJSON('/lost-reports', { item_id: item.item_id, user_id: reportedBy, lost_location: location, lost_date: date })
-      showAlert('alert', `Lost report filed! Item ID: ${item.item_id}`, 'success')
-      // Reset form
-      ;['item-name','item-desc','lost-location','lost-date'].forEach(id => document.getElementById(id).value = '')
+      const item = await postJSON('/items', {
+        name,
+        description:    desc,
+        category,
+        status:         'lost',
+        reporter_name:  reporterName,
+        reporter_phone: reporterPhone
+      })
+
+      await postJSON('/lost-reports', {
+        item_id:        item.item_id,
+        reporter_name:  reporterName,
+        reporter_phone: reporterPhone,
+        lost_location:  location,
+        lost_date:      date
+      })
+
+      showAlert('alert', `Lost report filed successfully! Item ID: ${item.item_id}`, 'success')
+
+      ;['item-name', 'item-desc', 'reporter-name', 'reporter-phone', 'lost-location', 'lost-date']
+        .forEach(id => { document.getElementById(id).value = '' })
+      document.getElementById('item-cat').value = ''
+
       loadLostReports()
     } catch (e) {
       showAlert('alert', 'Error: ' + e.message, 'error')
