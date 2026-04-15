@@ -4,18 +4,6 @@
 -- ============================================================
 
 USE lost_and_found;
-
--- ─────────────────────────────────────────
--- USERS
---
--- The hash below is a standard bcrypt hash (cost 10).
--- The plaintext password for ALL sample users is:  password
---
--- If you want a different password (e.g. Test@1234), run this
--- one-time Node snippet and replace the hash below:
---
---   node -e "require('bcrypt').hash('Test@1234',10).then(console.log)"
---
 -- ─────────────────────────────────────────
 INSERT INTO users (name, email, password, phone, role) VALUES
 ('Arjun Sharma',     'arjun.sharma@campus.edu',    '$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2uheWG/igi.', '9876543201', 'admin'),
