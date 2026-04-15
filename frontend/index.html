@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Lost & Found — Dashboard</title>
+  <title>Lost &amp; Found — Dashboard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css"/>
@@ -11,7 +11,7 @@
 <body>
 
 <nav>
-  <a class="nav-logo" href="index.html">L&F System</a>
+  <a class="nav-logo" href="index.html">L&amp;F System</a>
   <div class="nav-links">
     <a href="index.html">Dashboard</a>
     <a href="add_lost.html">Report Lost</a>
@@ -26,18 +26,30 @@
 
   <!-- Stats -->
   <div class="stats" id="stats">
-    <div class="stat-card"><div class="stat-num" id="count-lost">—</div><div class="stat-label">Lost</div></div>
-    <div class="stat-card"><div class="stat-num" id="count-found">—</div><div class="stat-label">Found</div></div>
-    <div class="stat-card"><div class="stat-num" id="count-claimed">—</div><div class="stat-label">Claimed</div></div>
-    <div class="stat-card"><div class="stat-num" id="count-pending">—</div><div class="stat-label">Pending Claims</div></div>
+    <div class="stat-card">
+      <div class="stat-num"   id="count-lost">—</div>
+      <div class="stat-label">Lost</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num"   id="count-found">—</div>
+      <div class="stat-label">Found</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num"   id="count-claimed">—</div>
+      <div class="stat-label">Claimed</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num"   id="count-pending">—</div>
+      <div class="stat-label">Pending Claims</div>
+    </div>
   </div>
 
   <!-- Filter -->
   <div class="filter-row">
     <button class="filter-btn active" data-filter="all">All Items</button>
-    <button class="filter-btn" data-filter="lost">Lost</button>
-    <button class="filter-btn" data-filter="found">Found</button>
-    <button class="filter-btn" data-filter="claimed">Claimed</button>
+    <button class="filter-btn"        data-filter="lost">Lost</button>
+    <button class="filter-btn"        data-filter="found">Found</button>
+    <button class="filter-btn"        data-filter="claimed">Claimed</button>
   </div>
 
   <!-- Items table -->
@@ -50,11 +62,12 @@
           <th>Category</th>
           <th>Status</th>
           <th>Reported By</th>
+          <th>Phone</th>
           <th>Date</th>
         </tr>
       </thead>
       <tbody id="items-body">
-        <tr><td colspan="6" class="loading">Loading items…</td></tr>
+        <tr><td colspan="7" class="loading">Loading items…</td></tr>
       </tbody>
     </table>
   </div>
@@ -64,28 +77,30 @@
 <script>
   let allItems = []
 
-  async function loadStats() {
+  async function loadDashboard() {
     try {
-      const [items, claims] = await Promise.all([
-        getJSON('/items'),                        // ← FIX: was 'http://localhost:3000/items'
-        getJSON('/claims/status/requested')       // ← FIX: was 'http://localhost:3000/claims/status/requested'
+      const [items, pendingClaims] = await Promise.all([
+        getJSON('/items'),
+        getJSON('/claims/status/requested')
       ])
       allItems = items
+
       document.getElementById('count-lost').textContent    = items.filter(i => i.status === 'lost').length
       document.getElementById('count-found').textContent   = items.filter(i => i.status === 'found').length
       document.getElementById('count-claimed').textContent = items.filter(i => i.status === 'claimed').length
-      document.getElementById('count-pending').textContent = claims.length
+      document.getElementById('count-pending').textContent = pendingClaims.length
+
       renderTable(allItems)
     } catch (e) {
       document.getElementById('items-body').innerHTML =
-        `<tr><td colspan="6" class="loading">Could not connect to backend. Make sure server.js is running.</td></tr>`
+        `<tr><td colspan="7" class="loading">Could not connect to backend. Make sure server.js is running.</td></tr>`
     }
   }
 
   function renderTable(items) {
     const tbody = document.getElementById('items-body')
-    if (items.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="6" class="loading">No items found.</td></tr>'
+    if (!items.length) {
+      tbody.innerHTML = '<tr><td colspan="7" class="loading">No items found.</td></tr>'
       return
     }
     tbody.innerHTML = items.map(i => `
@@ -94,7 +109,8 @@
         <td>${i.name}</td>
         <td>${i.category || '—'}</td>
         <td>${statusBadge(i.status)}</td>
-        <td>${i.reported_by_name}</td>
+        <td>${i.reporter_name}</td>
+        <td>${i.reporter_phone || '—'}</td>
         <td>${i.created_at ? new Date(i.created_at).toLocaleDateString() : '—'}</td>
       </tr>`).join('')
   }
@@ -108,7 +124,7 @@
     })
   })
 
-  loadStats()
+  loadDashboard()
 </script>
 </body>
 </html>
