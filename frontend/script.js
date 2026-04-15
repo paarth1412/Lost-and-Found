@@ -44,6 +44,12 @@ async function patchJSON(endpoint, body) {
   return res.json()
 }
 
+// ── Validation ────────────────────────────────────────────
+
+function isValidPhone(phone) {
+  return /^\d{10}$/.test(phone)
+}
+
 // ── UI helpers ────────────────────────────────────────────
 
 function statusBadge(status) {
@@ -85,8 +91,8 @@ async function populateItemSelect(selectId, statusFilter = null) {
   try {
     const endpoint = statusFilter ? `/items/status/${statusFilter}` : '/items'
     const items = await getJSON(endpoint)
-    select.innerHTML = '<option value="">— select item —</option>' +
-      items.map(i => `<option value="${i.item_id}">[${i.item_id}] ${i.name} (${i.status})</option>`).join('')
+    select.innerHTML = '<option value="">— select an item —</option>' +
+      items.map(i => `<option value="${i.item_id}">[#${i.item_id}] ${i.name} · ${i.status}</option>`).join('')
   } catch (e) {
     console.error('Could not load items:', e.message)
   }
@@ -102,12 +108,12 @@ function initNav() {
   if (!nav) return
 
   const userEl = document.createElement('div')
-  userEl.style.cssText = 'display:flex; align-items:center; gap:0.75rem;'
+  userEl.className = 'nav-user-info'
   userEl.innerHTML = `
-    <span style="font-family:var(--mono); font-size:0.72rem; color:var(--text-muted); letter-spacing:0.05em;">
-      ${name} <span style="color:var(--accent);">[${role}]</span>
+    <span class="nav-user-name">
+      ${name} <span class="nav-user-role">[${role}]</span>
     </span>
-    <button class="btn btn-danger btn-sm" onclick="logout()">Logout</button>
+    <button class="btn btn-danger btn-sm" onclick="logout()">Sign Out</button>
   `
   nav.appendChild(userEl)
 }
