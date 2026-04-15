@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Claims</title>
+  <title>Claims — L&F System</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
 
 <nav>
-  <a class="nav-logo" href="index.html">L&F System</a>
+  <a class="nav-logo" href="index.html">L&amp;F System</a>
   <div class="nav-links">
     <a href="index.html">Dashboard</a>
     <a href="add_lost.html">Report Lost</a>
@@ -21,27 +21,40 @@
 </nav>
 
 <div class="page">
-  <h1 class="page-title">Claims</h1>
-  <p class="page-sub">Submit a claim or review existing ones.</p>
+
+  <header style="margin-bottom: 2rem;">
+    <h1 class="page-title">Claims</h1>
+    <p class="page-sub">Submit a claim for a found item, or review existing claims.</p>
+  </header>
 
   <div id="alert" class="alert"></div>
 
-  <!-- Submit claim form -->
-  <h2 style="font-size:1.2rem;font-weight:700;margin-bottom:1rem;">Submit a Claim</h2>
+  <!-- Submit Claim -->
+  <div class="section-header" style="margin-top:0;">
+    <h2>Submit a Claim</h2>
+  </div>
+
   <div class="form-card" style="margin-bottom:3rem;">
     <div class="form-group">
       <label>Item to Claim *</label>
       <select id="claim-item"></select>
     </div>
-    <div class="form-group">
-      <label>Claimed By *</label>
-      <select id="claim-user"></select>
+    <div class="form-group" style="margin-bottom:1.5rem;">
+      <label>Claiming As</label>
+      <div class="claimant-display">
+        <span class="claimant-dot"></span>
+        <span id="claim-user-display" style="font-size:0.875rem; color:var(--muted);">—</span>
+      </div>
+      <!-- Hidden input for compatibility with existing JS -->
+      <input type="hidden" id="claim-user-input"/>
     </div>
     <button class="btn btn-primary" onclick="submitClaim()">Submit Claim</button>
   </div>
 
-  <!-- Claims table -->
-  <h2 style="font-size:1.2rem;font-weight:700;margin-bottom:1rem;">All Claims</h2>
+  <!-- Claims Table -->
+  <div class="section-header">
+    <h2>All Claims</h2>
+  </div>
 
   <div class="filter-row">
     <button class="filter-btn active" data-filter="all">All</button>
@@ -60,7 +73,7 @@
           <th>Status</th>
           <th>Reviewed By</th>
           <th>Date</th>
-          <th>Actions (Admin)</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody id="claims-body">
@@ -68,14 +81,22 @@
       </tbody>
     </table>
   </div>
+
 </div>
 
 <script src="script.js"></script>
 <script>
   let allClaims = []
 
-  populateUserSelect('claim-user')
-  populateItemSelect('claim-item', 'found')   // only 'found' items can be claimed
+  const currentUserId = sessionStorage.getItem('user_id')
+  const currentName   = sessionStorage.getItem('user_name') || ''
+  const currentRole   = sessionStorage.getItem('user_role')
+  const isAdmin       = currentRole === 'admin'
+
+  // Show logged-in user name
+  document.getElementById('claim-user-display').textContent = currentName || 'Not logged in'
+
+  populateItemSelect('claim-item', 'found')
 
   async function loadClaims() {
     try {
@@ -90,34 +111,54 @@
   function renderClaims(claims) {
     const tbody = document.getElementById('claims-body')
     if (!claims.length) {
-      tbody.innerHTML = '<tr><td colspan="7" class="loading">No claims found.</td></tr>'; return
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="7">
+            <div class="empty-state">
+              <div class="empty-icon">◎</div>
+              <p>No claims found.</p>
+            </div>
+          </td>
+        </tr>`
+      return
     }
     tbody.innerHTML = claims.map(c => `
       <tr>
-        <td>${c.claim_id}</td>
-        <td>${c.item_name}</td>
+        <td><span style="font-family:var(--mono); font-size:0.75rem; color:var(--muted-light);">${c.claim_id}</span></td>
+        <td style="font-weight:500;">${c.item_name}</td>
         <td>${c.claimed_by_name}</td>
         <td>${statusBadge(c.status)}</td>
-        <td>${c.reviewed_by_name || '—'}</td>
-        <td>${c.claim_date ? new Date(c.claim_date).toLocaleDateString() : '—'}</td>
+        <td style="color:var(--muted);">${c.reviewed_by_name || '—'}</td>
+        <td style="color:var(--muted); font-size:0.82rem;">${c.claim_date ? new Date(c.claim_date).toLocaleDateString('en-IN', {day:'2-digit', month:'short', year:'numeric'}) : '—'}</td>
         <td>
-          ${c.status === 'requested' ? `
-            <button class="btn btn-success btn-sm" onclick="resolve(${c.claim_id},'approved')">Approve</button>
-            <button class="btn btn-danger  btn-sm" onclick="resolve(${c.claim_id},'rejected')" style="margin-left:0.4rem">Reject</button>
-          ` : '—'}
+          ${isAdmin && c.status === 'requested' ? `
+            <div style="display:flex; gap:0.4rem; flex-wrap:wrap;">
+              <button class="btn btn-success btn-sm" onclick="resolveClaim(${c.claim_id}, 'approved')">Approve</button>
+              <button class="btn btn-danger btn-sm" onclick="resolveClaim(${c.claim_id}, 'rejected')">Reject</button>
+            </div>
+          ` : '<span style="color:var(--muted-light); font-size:0.8rem;">—</span>'}
         </td>
       </tr>`).join('')
   }
 
   async function submitClaim() {
-    const item_id    = document.getElementById('claim-item').value
-    const claimed_by = document.getElementById('claim-user').value
-    if (!item_id || !claimed_by) {
-      showAlert('alert', 'Please select an item and a user.', 'error'); return
+    const item_id = document.getElementById('claim-item').value
+
+    if (!item_id) {
+      showAlert('alert', 'Please select an item to claim.', 'error')
+      return
     }
+    if (!currentUserId) {
+      showAlert('alert', 'You must be logged in to submit a claim.', 'error')
+      return
+    }
+
     try {
-      const r = await postJSON('/claims', { item_id, claimed_by })
-      showAlert('alert', `Claim submitted! Claim ID: ${r.claim_id}`, 'success')
+      const r = await postJSON('/claims', {
+        item_id,
+        claimed_by: currentUserId
+      })
+      showAlert('alert', `Claim submitted successfully! Claim ID: ${r.claim_id}`, 'success')
       loadClaims()
       populateItemSelect('claim-item', 'found')
     } catch (e) {
@@ -125,13 +166,23 @@
     }
   }
 
-  async function resolve(claim_id, status) {
+  async function resolveClaim(claim_id, status) {
+    if (!isAdmin) {
+      showAlert('alert', 'Access denied. Admins only.', 'error')
+      return
+    }
+
     const notes = status === 'rejected'
-      ? (prompt('Reason for rejection:') || 'Rejected by admin')
+      ? (prompt('Reason for rejection (optional):') || 'Rejected by admin')
       : 'Verified by admin'
+
     try {
-      await patchJSON(`/claims/${claim_id}`, { status, notes, reviewed_by: 1 })
-      showAlert('alert', `Claim ${status}!`, 'success')
+      await patchJSON(`/claims/${claim_id}`, {
+        status,
+        notes,
+        reviewed_by: currentUserId
+      })
+      showAlert('alert', `Claim ${status} successfully!`, 'success')
       loadClaims()
     } catch (e) {
       showAlert('alert', 'Error: ' + e.message, 'error')
