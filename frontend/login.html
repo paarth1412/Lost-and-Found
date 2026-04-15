@@ -3,11 +3,12 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Lost & Found — Login</title>
+  <title>Lost &amp; Found — Login</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css"/>
   <style>
+    /* ── Page layout ──────────────────────── */
     .login-page {
       min-height: 100vh;
       display: flex;
@@ -15,127 +16,211 @@
       justify-content: center;
       padding: 2rem;
       background:
-        linear-gradient(rgba(200,241,53,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(200,241,53,0.03) 1px, transparent 1px);
+        linear-gradient(rgba(74,144,226,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(74,144,226,0.04) 1px, transparent 1px);
       background-size: 48px 48px;
     }
 
     .login-box {
       width: 100%;
-      max-width: 420px;
+      max-width: 440px;
     }
 
-    .login-header {
-      margin-bottom: 2.5rem;
-    }
+    /* ── Header ───────────────────────────── */
+    .login-header { margin-bottom: 2.5rem; }
 
     .login-logo {
-      font-size: 0.85rem;
-      font-weight: 800;
-      color: var(--accent);
-      letter-spacing: 0.1em;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--primary);
+      letter-spacing: 0.12em;
       text-transform: uppercase;
-      font-family: var(--mono);
+      font-family: 'DM Mono', monospace;
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.25rem;
     }
-
     .login-logo::before {
       content: '';
       display: inline-block;
-      width: 6px;
-      height: 6px;
-      background: var(--accent);
+      width: 6px; height: 6px;
+      background: var(--primary);
       border-radius: 50%;
     }
 
     .login-header h1 {
-      font-size: 2.2rem;
+      font-family: 'Syne', sans-serif;
+      font-size: 2.4rem;
       font-weight: 800;
       letter-spacing: -0.03em;
       line-height: 1.1;
       margin-bottom: 0.5rem;
+      color: var(--text);
     }
-
-    .login-header h1 span {
-      color: var(--accent);
-    }
+    .login-header h1 span { color: var(--primary); }
 
     .login-header p {
-      font-family: var(--mono);
-      font-size: 0.78rem;
-      color: var(--text-muted);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--muted);
     }
 
+    /* ── Card ─────────────────────────────── */
     .login-card {
-      background: var(--bg-card);
+      background: white;
       border: 1px solid var(--border);
-      border-radius: 6px;
+      border-radius: 10px;
       overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
     }
 
+    /* ── Tab strip — 3 equal columns ─────── */
     .tab-strip {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr 1fr 1fr;
       border-bottom: 1px solid var(--border);
     }
-
     .tab-strip button {
-      padding: 0.9rem;
+      padding: 0.85rem 0.4rem;
       background: transparent;
       border: none;
-      font-family: var(--mono);
-      font-size: 0.72rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
       font-weight: 500;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
-      color: var(--text-muted);
+      color: var(--muted);
       cursor: pointer;
       transition: all 0.2s;
       border-bottom: 2px solid transparent;
       margin-bottom: -1px;
     }
-
     .tab-strip button.active {
-      color: var(--accent);
-      border-bottom-color: var(--accent);
-      background: rgba(200,241,53,0.04);
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+      background: rgba(74,144,226,0.03);
     }
-
     .tab-strip button:hover:not(.active) {
       color: var(--text);
-      background: rgba(255,255,255,0.02);
+      background: rgba(0,0,0,0.02);
     }
 
-    .login-body {
-      padding: 2rem;
-    }
-
+    /* ── Body ─────────────────────────────── */
+    .login-body { padding: 2rem; }
     .login-body .form-card {
       background: transparent;
       border: none;
       padding: 0;
-      max-width: 100%;
+      box-shadow: none;
     }
 
+    /* ── Password strength meter ──────────── */
+    .pw-strength-wrap {
+      margin-top: 5px;
+      height: 3px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .pw-strength-bar {
+      height: 100%;
+      width: 0%;
+      border-radius: 2px;
+      transition: width 0.3s ease, background-color 0.3s ease;
+    }
+    .pw-hint {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      margin-top: 4px;
+      min-height: 1rem;
+      transition: color 0.3s;
+    }
+
+    /* ── Forgot password steps ────────────── */
+    .step-indicator {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .step-dot {
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      flex-shrink: 0;
+      transition: all 0.25s;
+    }
+    .step-dot.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+    .step-dot.done {
+      background: var(--success);
+      border-color: var(--success);
+      color: #fff;
+    }
+    .step-line {
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .step-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-bottom: 1.25rem;
+    }
+    .step-label strong {
+      display: block;
+      font-family: 'Syne', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 0.15rem;
+    }
+
+    .back-btn {
+      background: none;
+      border: none;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--muted);
+      cursor: pointer;
+      padding: 0;
+      margin-bottom: 1rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      transition: color 0.2s;
+    }
+    .back-btn:hover { color: var(--text); }
+
+    /* ── Footer tags ──────────────────────── */
     .login-footer {
       margin-top: 1.5rem;
       padding-top: 1.5rem;
       border-top: 1px solid var(--border);
       display: flex;
       flex-wrap: wrap;
-      gap: 0.5rem;
+      gap: 0.4rem;
     }
-
     .footer-tag {
-      font-family: var(--mono);
-      font-size: 0.65rem;
-      color: var(--text-muted);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.63rem;
+      color: var(--muted);
       border: 1px solid var(--border);
-      padding: 0.2rem 0.6rem;
-      border-radius: 2px;
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
       letter-spacing: 0.05em;
     }
   </style>
@@ -145,6 +230,7 @@
 <div class="login-page">
   <div class="login-box">
 
+    <!-- Header -->
     <div class="login-header">
       <div class="login-logo">L&amp;F System</div>
       <h1>Lost &amp; <span>Found.</span></h1>
@@ -153,15 +239,19 @@
 
     <div class="login-card">
 
+      <!-- 3-tab strip -->
       <div class="tab-strip">
-        <button class="active" id="tab-login" onclick="switchTab('login')">Sign In</button>
-        <button id="tab-register" onclick="switchTab('register')">Register</button>
+        <button class="active" id="tab-login"    onclick="switchTab('login')">Sign In</button>
+        <button               id="tab-register"  onclick="switchTab('register')">Register</button>
+        <button               id="tab-forgot"    onclick="switchTab('forgot')">Forgot PW</button>
       </div>
 
       <div class="login-body">
         <div id="alert" class="alert"></div>
 
-        <!-- LOGIN FORM -->
+        <!-- ════════════════════════════════════════
+             TAB 1 — SIGN IN
+        ════════════════════════════════════════ -->
         <div id="form-login">
           <div class="form-card">
             <div class="form-group">
@@ -172,13 +262,23 @@
               <label>Password</label>
               <input type="password" id="login-password" placeholder="••••••••"/>
             </div>
-            <button class="btn btn-primary" style="width:100%; margin-top:0.4rem;" onclick="doLogin()">
+            <button class="btn btn-primary" style="width:100%; margin-top:0.5rem;" onclick="doLogin()">
               Sign In →
             </button>
+            <p style="margin-top:1rem; text-align:center; font-family:'DM Mono',monospace; font-size:0.7rem; color:var(--muted);">
+              Forgot your password?
+              <button onclick="switchTab('forgot')"
+                      style="background:none;border:none;color:var(--primary);font-family:'DM Mono',monospace;font-size:0.7rem;cursor:pointer;padding:0;text-decoration:underline;">
+                Reset it here
+              </button>
+            </p>
           </div>
         </div>
 
-        <!-- REGISTER FORM -->
+        <!-- ════════════════════════════════════════
+             TAB 2 — REGISTER
+             No role selector — backend always assigns 'user'.
+        ════════════════════════════════════════ -->
         <div id="form-register" style="display:none;">
           <div class="form-card">
             <div class="form-group">
@@ -190,71 +290,230 @@
               <input type="email" id="reg-email" placeholder="you@campus.edu"/>
             </div>
             <div class="form-group">
-              <label>Password *</label>
-              <input type="password" id="reg-password" placeholder="Min. 6 characters"/>
-            </div>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
-              <div class="form-group" style="margin-bottom:0;">
-                <label>Phone</label>
-                <input type="text" id="reg-phone" placeholder="Optional"/>
+              <label>
+                Password *
+                <span style="font-size:0.68rem; color:var(--muted); font-weight:400;">(min. 6 characters)</span>
+              </label>
+              <input type="password" id="reg-password" placeholder="Min. 6 characters"
+                     oninput="updateStrength(this.value, 'reg-bar', 'reg-hint')"/>
+              <div class="pw-strength-wrap">
+                <div class="pw-strength-bar" id="reg-bar"></div>
               </div>
-              <div class="form-group" style="margin-bottom:0;">
-                <label>Role</label>
-                <select id="reg-role">
-                  <option value="user">User</option>
-                  <option value="admin">Admin</option>
-                </select>
-              </div>
+              <div class="pw-hint" id="reg-hint"></div>
             </div>
-            <button class="btn btn-primary" style="width:100%; margin-top:1.2rem;" onclick="doRegister()">
+            <div class="form-group">
+              <label>
+                Phone
+                <span style="font-size:0.68rem; color:var(--muted); font-weight:400;">(10 digits, optional)</span>
+              </label>
+              <input type="text" id="reg-phone" placeholder="e.g. 9876543210" maxlength="10"/>
+            </div>
+            <div class="form-group">
+              <label>Security Question *</label>
+              <select id="reg-security-question">
+                <option value="">— Select a question —</option>
+                <option>What is the name of your first school?</option>
+                <option>What is the name of the street you grew up on?</option>
+                <option>What city were you born in?</option>
+                <option>What is your favourite sport or hobby?</option>
+                <option>What is your favourite flower?</option>
+                <option>What breed is your favourite dog?</option>
+                <option>What city did you grow up in?</option>
+                <option>What is your favourite sport?</option>
+                <option>What style of music do you enjoy most?</option>
+                <option>Who is your favourite scientist?</option>
+                <option>What is your favourite Indian art form?</option>
+                <option>What is your star sign?</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>
+                Security Answer *
+                <span style="font-size:0.68rem; color:var(--muted); font-weight:400;">(case-insensitive)</span>
+              </label>
+              <input type="text" id="reg-security-answer" placeholder="Your answer"/>
+            </div>
+            <button class="btn btn-primary" style="width:100%; margin-top:0.5rem;" onclick="doRegister()">
               Create Account →
             </button>
           </div>
         </div>
 
+        <!-- ════════════════════════════════════════
+             TAB 3 — FORGOT PASSWORD (3-step)
+             Step 1 — Enter email → fetch security question
+             Step 2 — Answer security question
+             Step 3 — Set new password (with strength meter)
+        ════════════════════════════════════════ -->
+        <div id="form-forgot" style="display:none;">
+
+          <!-- Step progress indicator -->
+          <div class="step-indicator">
+            <div class="step-dot active" id="sdot-1">1</div>
+            <div class="step-line"></div>
+            <div class="step-dot" id="sdot-2">2</div>
+            <div class="step-line"></div>
+            <div class="step-dot" id="sdot-3">3</div>
+          </div>
+
+          <!-- Step 1: Enter email -->
+          <div id="forgot-step-1">
+            <div class="step-label">
+              <strong>Find your account</strong>
+              Enter the email address linked to your account.
+            </div>
+            <div class="form-card">
+              <div class="form-group">
+                <label>Email Address *</label>
+                <input type="email" id="forgot-email" placeholder="you@campus.edu"/>
+              </div>
+              <button class="btn btn-primary" style="width:100%;" onclick="forgotStep1()">
+                Continue →
+              </button>
+            </div>
+          </div>
+
+          <!-- Step 2: Answer security question -->
+          <div id="forgot-step-2" style="display:none;">
+            <button class="back-btn" onclick="goForgotStep(1)">← Back</button>
+            <div class="step-label">
+              <strong>Security question</strong>
+              Answer correctly to verify your identity.
+            </div>
+            <div class="form-card">
+              <div class="form-group">
+                <label>Your question</label>
+                <p id="display-question"
+                   style="font-size:0.9rem; font-weight:600; color:var(--text);
+                          padding:0.5rem 0; border-bottom:1px solid var(--border);"></p>
+              </div>
+              <div class="form-group">
+                <label>Your Answer *</label>
+                <input type="text" id="forgot-answer" placeholder="Type your answer"/>
+              </div>
+              <button class="btn btn-primary" style="width:100%;" onclick="forgotStep2()">
+                Verify →
+              </button>
+            </div>
+          </div>
+
+          <!-- Step 3: New password -->
+          <div id="forgot-step-3" style="display:none;">
+            <button class="back-btn" onclick="goForgotStep(2)">← Back</button>
+            <div class="step-label">
+              <strong>Set new password</strong>
+              Choose a strong password — minimum 6 characters.
+            </div>
+            <div class="form-card">
+              <div class="form-group">
+                <label>
+                  New Password *
+                  <span style="font-size:0.68rem; color:var(--muted); font-weight:400;">(min. 6 characters)</span>
+                </label>
+                <input type="password" id="new-password" placeholder="New password"
+                       oninput="updateStrength(this.value, 'fp-bar', 'fp-hint')"/>
+                <div class="pw-strength-wrap">
+                  <div class="pw-strength-bar" id="fp-bar"></div>
+                </div>
+                <div class="pw-hint" id="fp-hint"></div>
+              </div>
+              <div class="form-group">
+                <label>Confirm New Password *</label>
+                <input type="password" id="confirm-password" placeholder="Repeat new password"/>
+              </div>
+              <button class="btn btn-primary" style="width:100%;" onclick="forgotStep3()">
+                Reset Password →
+              </button>
+            </div>
+          </div>
+
+        </div><!-- /form-forgot -->
+
+        <!-- Footer tags -->
         <div class="login-footer">
           <span class="footer-tag">Report Lost</span>
           <span class="footer-tag">Report Found</span>
           <span class="footer-tag">Manage Claims</span>
           <span class="footer-tag">DBMS Project</span>
         </div>
-      </div>
-
-    </div>
-  </div>
-</div>
+      </div><!-- /login-body -->
+    </div><!-- /login-card -->
+  </div><!-- /login-box -->
+</div><!-- /login-page -->
 
 <script>
   const API = 'http://localhost:3000'
 
+  // ── Tab switching ──────────────────────────────────────
   function switchTab(tab) {
-    const isLogin = tab === 'login'
-    document.getElementById('form-login').style.display    = isLogin ? 'block' : 'none'
-    document.getElementById('form-register').style.display = isLogin ? 'none'  : 'block'
-    document.getElementById('tab-login').classList.toggle('active', isLogin)
-    document.getElementById('tab-register').classList.toggle('active', !isLogin)
-    document.getElementById('alert').style.display = 'none'
+    ['login', 'register', 'forgot'].forEach(t => {
+      document.getElementById('form-' + t).style.display = (t === tab) ? 'block' : 'none'
+      document.getElementById('tab-' + t).classList.toggle('active', t === tab)
+    })
+    hideAlert()
+    if (tab === 'forgot') resetForgotFlow()
   }
 
+  // ── Alert helpers ──────────────────────────────────────
   function showAlert(message, type) {
     const el = document.getElementById('alert')
     el.textContent   = message
-    el.className     = `alert alert-${type}`
+    el.className     = 'alert alert-' + type
     el.style.display = 'block'
   }
+  function hideAlert() {
+    document.getElementById('alert').style.display = 'none'
+  }
 
+  // ── Password strength meter ────────────────────────────
+  // barId  = id of .pw-strength-bar element
+  // hintId = id of .pw-hint element
+  function updateStrength(pw, barId, hintId) {
+    const bar  = document.getElementById(barId)
+    const hint = document.getElementById(hintId)
+
+    if (!pw) {
+      bar.style.width = '0%'
+      hint.textContent = ''
+      return
+    }
+
+    let score = 0
+    if (pw.length >= 6)              score++ // meets minimum
+    if (pw.length >= 10)             score++ // decent length
+    if (/[A-Z]/.test(pw))            score++ // uppercase
+    if (/[0-9]/.test(pw))            score++ // digit
+    if (/[^A-Za-z0-9]/.test(pw))     score++ // special char
+
+    const levels = [
+      { w: '20%',  color: '#e74c3c', label: 'Too short'  },
+      { w: '40%',  color: '#e67e22', label: 'Weak'       },
+      { w: '60%',  color: '#f1c40f', label: 'Fair'       },
+      { w: '80%',  color: '#2ecc71', label: 'Good'       },
+      { w: '100%', color: '#27ae60', label: 'Strong'     }
+    ]
+    const lvl = levels[Math.min(score, 4)]
+
+    bar.style.width           = lvl.w
+    bar.style.backgroundColor = lvl.color
+    hint.textContent          = lvl.label
+    hint.style.color          = lvl.color
+  }
+
+  // ── Sign In ────────────────────────────────────────────
   async function doLogin() {
     const email    = document.getElementById('login-email').value.trim()
     const password = document.getElementById('login-password').value
     if (!email || !password) { showAlert('Please enter your email and password.', 'error'); return }
+
     try {
       const res  = await fetch(API + '/login', {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ email, password })
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body:   JSON.stringify({ email, password })
       })
       const data = await res.json()
       if (!res.ok) { showAlert(data.error, 'error'); return }
+
       sessionStorage.setItem('user_id',   data.user_id)
       sessionStorage.setItem('user_name', data.name)
       sessionStorage.setItem('user_role', data.role)
@@ -264,21 +523,35 @@
     }
   }
 
+  // ── Register ───────────────────────────────────────────
+  // Role is intentionally NOT sent — backend always assigns 'user'.
   async function doRegister() {
-    const name     = document.getElementById('reg-name').value.trim()
-    const email    = document.getElementById('reg-email').value.trim()
-    const password = document.getElementById('reg-password').value
-    const phone    = document.getElementById('reg-phone').value.trim()
-    const role     = document.getElementById('reg-role').value
+    const name             = document.getElementById('reg-name').value.trim()
+    const email            = document.getElementById('reg-email').value.trim()
+    const password         = document.getElementById('reg-password').value
+    const phone            = document.getElementById('reg-phone').value.trim()
+    const security_question = document.getElementById('reg-security-question').value
+    const security_answer  = document.getElementById('reg-security-answer').value.trim()
+
     if (!name || !email || !password) { showAlert('Name, email and password are required.', 'error'); return }
+    if (password.length < 6)          { showAlert('Password must be at least 6 characters.', 'error'); return }
+    if (phone && !/^\d{10}$/.test(phone)) { showAlert('Phone must be exactly 10 digits.', 'error'); return }
+    if (!security_question)           { showAlert('Please select a security question.', 'error'); return }
+    if (!security_answer)             { showAlert('Security answer is required.', 'error'); return }
+
     try {
       const res  = await fetch(API + '/register', {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ name, email, password, phone, role })
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body:   JSON.stringify({
+          name, email, password,
+          phone: phone || undefined,
+          security_question,
+          security_answer
+        })
       })
       const data = await res.json()
       if (!res.ok) { showAlert(data.error, 'error'); return }
+
       showAlert('Account created! You can now sign in.', 'success')
       switchTab('login')
     } catch (e) {
@@ -286,11 +559,104 @@
     }
   }
 
+  // ── Forgot Password — 3-step flow ─────────────────────
+
+  let _forgotEmail = ''   // shared across steps
+
+  function resetForgotFlow() {
+    _forgotEmail = ''
+    ;['forgot-email', 'forgot-answer', 'new-password', 'confirm-password'].forEach(id => {
+      const el = document.getElementById(id)
+      if (el) el.value = ''
+    })
+    // Reset strength bars
+    ;['fp-bar', 'fp-hint'].forEach(id => {
+      const el = document.getElementById(id)
+      if (el) { el.style.width = '0%'; el.textContent = '' }
+    })
+    goForgotStep(1)
+  }
+
+  function goForgotStep(n) {
+    [1, 2, 3].forEach(i => {
+      document.getElementById('forgot-step-' + i).style.display = (i === n) ? 'block' : 'none'
+      const dot = document.getElementById('sdot-' + i)
+      dot.classList.remove('active', 'done')
+      if (i < n)        dot.classList.add('done')
+      else if (i === n) dot.classList.add('active')
+    })
+    hideAlert()
+  }
+
+  // Step 1 — fetch the security question for this email
+  async function forgotStep1() {
+    const email = document.getElementById('forgot-email').value.trim()
+    if (!email) { showAlert('Please enter your email address.', 'error'); return }
+
+    try {
+      const res  = await fetch(API + '/forgot-password/question?email=' + encodeURIComponent(email))
+      const data = await res.json()
+      if (!res.ok) { showAlert(data.error, 'error'); return }
+
+      _forgotEmail = email
+      document.getElementById('display-question').textContent = data.security_question
+      goForgotStep(2)
+    } catch (e) {
+      showAlert('Could not connect to server. Is it running?', 'error')
+    }
+  }
+
+  // Step 2 — validate answer is not empty, then advance to step 3.
+  // Actual bcrypt answer verification happens server-side in step 3.
+  function forgotStep2() {
+    const answer = document.getElementById('forgot-answer').value.trim()
+    if (!answer) { showAlert('Please enter your answer.', 'error'); return }
+    goForgotStep(3)
+  }
+
+  // Step 3 — submit email + security answer + new password to /forgot-password/reset.
+  // The backend verifies the answer against the stored bcrypt hash before updating.
+  async function forgotStep3() {
+    const newPw     = document.getElementById('new-password').value
+    const confirmPw = document.getElementById('confirm-password').value
+    const answer    = document.getElementById('forgot-answer').value.trim()
+
+    if (!newPw || !confirmPw)   { showAlert('Please fill in both password fields.', 'error'); return }
+    if (newPw.length < 6)       { showAlert('Password must be at least 6 characters.', 'error'); return }
+    if (newPw !== confirmPw)    { showAlert('Passwords do not match.', 'error'); return }
+
+    try {
+      const res  = await fetch(API + '/forgot-password/reset', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body:   JSON.stringify({ email: _forgotEmail, security_answer: answer, new_password: newPw })
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        showAlert(data.error, 'error')
+        // Wrong answer → send user back to step 2 to re-enter
+        if (data.error && data.error.toLowerCase().includes('answer')) goForgotStep(2)
+        return
+      }
+      showAlert('Password reset successfully! You can now sign in.', 'success')
+      setTimeout(() => switchTab('login'), 1800)
+    } catch (e) {
+      showAlert('Could not connect to server. Is it running?', 'error')
+    }
+  }
+
+  // ── Boot ───────────────────────────────────────────────
+  // Redirect to dashboard if session already exists
   if (sessionStorage.getItem('user_id')) window.location.href = 'index.html'
 
+  // Enter key triggers the active tab's primary action
   document.addEventListener('keydown', e => {
     if (e.key !== 'Enter') return
-    document.getElementById('form-login').style.display !== 'none' ? doLogin() : doRegister()
+    const activeTab = document.querySelector('.tab-strip button.active')
+    if (!activeTab) return
+    const id = activeTab.id
+    if (id === 'tab-login')    doLogin()
+    else if (id === 'tab-register') doRegister()
+    // No enter-key shortcut for forgot-password steps (multi-step, safer without it)
   })
 </script>
 </body>
