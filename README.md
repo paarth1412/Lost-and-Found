@@ -1,37 +1,126 @@
-# Lost and Found Management System
+# Lost & Found Management System
 
-A DBMS-based application for managing lost and found items within a campus environment.
-This project demonstrates relational database design, data integrity, and structured workflows as part of academic coursework.
+A structured, end-to-end platform for managing lost and found items within a campus or organizational environment, designed to bring clarity, accountability, and efficiency to an otherwise chaotic process.
 
----
-
-## Project Purpose
-
-The system is designed to:
-
-* Implement a real-world relational database
-* Apply core DBMS concepts (entities, relationships, constraints)
-* Maintain structured item reporting and verification
-* Demonstrate SQL-based operations and workflows
+> Items are tracked primarily by **status**, and optionally organized by **categories**. The system functions fully even without categories, using status as the core organizing principle.
 
 ---
 
-## Core Features
+## Overview
 
-* Users can report items as **lost** or **found**
-* Item details are stored with proper relational mapping
-* Users can submit **claim requests**
-* Admin verifies and updates claim status
-* Item lifecycle is controlled through database constraints
+Misplaced items are a daily reality in any shared environment. Traditional notice boards, informal messaging, or word-of-mouth are inefficient and unreliable.
+
+This system introduces a **centralized, trackable, and verifiable workflow** that enables users to:
+- Report lost and found items  
+- Discover potential matches  
+- Submit and validate ownership claims  
+- Ensure accountability through admin moderation  
+
+The result is a **transparent lifecycle for every item**, from loss to recovery.
+
+---
+
+## Current Scope & Future Enhancements
+
+### 1. Authentication & SSO
+**Current state:** Custom email/password registration with bcrypt hashing and security-question reset.  
+**The problem:** Students already have institutional credentials (Google Workspace, Microsoft, Apple). Asking them to create yet another account reduces adoption.  
+**Future goal:** Integrate OAuth 2.0 (Google Sign-In or Microsoft SSO) so users can log in with their campus accounts.
+
+### 2. Session & Authorization (No Real Auth System)
+**Current state:** After login, the frontend stores `user_id`, `name`, and `role` in `sessionStorage`. No JWTs, no server-side sessions, no expiry.  
+**The problem:** Any user can open DevTools and manually set `role = "admin"` to see admin UI. The backend does verify some actions, but the frontend is trust‑based.  
+**Future goal:** Implement stateless JWT tokens (or `express-session` with Redis) with proper expiry and signed roles.
+
+### 3. Report Integrity – Misclassified Reports (Lost Instead of Found)
+**Current state:** Users can independently submit lost or found reports without validation of report type or cross-checking against existing entries.  
+**The problem:** A person who finds an item may mistakenly (or intentionally) register it as a lost report instead of a found report. This creates confusion in the system and prevents the actual owner from discovering and claiming their item through the correct flow.  
+**Future goal:** Introduce validation mechanisms and smart prompts to guide users in selecting the correct report type. Implement cross-checking between similar lost and found entries and allow admins to reclassify incorrect reports when necessary.
+
+### 4. Privacy – Reporter Phone Numbers Are Publicly Visible
+**Current state:** The dashboard and report pages expose every reporter’s phone number to any visitor – no login required.  
+**The problem:** Displaying personal phone numbers of students on a public‑facing URL is a privacy risk.  
+**Future goal:** Mask phone numbers for unauthenticated users (e.g., show `98765XXXXX`) and reveal the full number only to logged‑in users or admins.
+
+### 5. Image Support – No Photo Attachments
+**Current state:** Items are described only with text. No facility for uploading photos of lost or found items.  
+**The problem:** A photo of a found wallet resolves ambiguity immediately. Without images, identification relies entirely on text and in‑person verification, making self‑service less effective.  
+**Future goal:** Add image upload using `multer`, store files locally or in a cloud bucket (AWS S3), and display thumbnails on the dashboard.
+
+---
+
+## Key Features
+
+### User System
+- Secure **registration and login**
+- **Password recovery** via security questions
+- Session-based authentication
+
+### Item Reporting
+- Report items as **Lost** or **Found**
+- Structured input for descriptions and identification
+- Status-driven tracking of items
+
+### Claim Workflow
+- Users submit **ownership claims**
+- Claims are tied directly to item records
+- Prevents uncontrolled or duplicate recovery attempts
+
+### Admin Moderation
+- Centralized review of claims
+- Approve / reject based on validation
+- Maintains system integrity
+
+### Dashboard & Visibility
+- View:
+  - Lost items  
+  - Found items  
+  - Claimed items  
+  - Pending claims  
+
+---
+
+## System Workflow
+
+```
+Report Lost → Report Found → Submit Claim → Admin Review → Approved → Item Recovered
+```
+
+### Flow Summary
+
+1. A user reports an item as **lost**  
+2. Another user reports a similar item as **found**  
+3. The owner submits a **claim request**  
+4. Admin verifies ownership  
+5. If approved → item is marked **claimed**  
+
+---
+
+## System Design
+
+### Core Entities
+
+| Entity          | Purpose |
+|----------------|--------|
+| `users`        | User identity and authentication |
+| `items`        | Central item records |
+| `lost_reports` | Lost item entries |
+| `found_reports`| Found item entries |
+| `claims`       | Ownership requests |
+
+### Design Highlights
+
+- Strong **relational integrity** via foreign keys  
+- **Normalized schema** to reduce redundancy  
+- Controlled **status lifecycle** (`lost → found → claimed`)  
+- Clear separation of reporting and verification  
 
 ---
 
 ## Project Structure
 
 ```
-lost_and_found_2/
-│
-├── README.md
+lost_and_found/
 │
 ├── database/
 │   ├── schema.sql
@@ -53,36 +142,27 @@ lost_and_found_2/
 │   ├── script.js
 │   └── style.css
 │
-└── .gitignore
+└── README.md
 ```
 
 ---
 
-## How to Run
+## Getting Started
 
-### 1. Setup Database
-
-Create database:
+### 1. Database Setup
 
 ```sql
 CREATE DATABASE lost_and_found;
 ```
 
-Import schema:
-
 ```bash
 mysql -u root -p lost_and_found < database/schema.sql
-```
-
-Insert sample data:
-
-```bash
 mysql -u root -p lost_and_found < database/sample_data.sql
 ```
 
 ---
 
-### 2. Setup Backend
+### 2. Backend Setup
 
 ```bash
 cd backend
@@ -90,7 +170,7 @@ npm install
 node server.js
 ```
 
-Server should run on:
+Server runs at:
 
 ```
 http://localhost:3000
@@ -98,61 +178,24 @@ http://localhost:3000
 
 ---
 
-### 3. Run Frontend
+### 3. Frontend
 
-* Open `frontend/index.html` in browser
-  OR
+* Open `frontend/index.html`
+  **or**
 * Use Live Server (recommended)
 
 ---
 
-## Database Design
-
-### Main Entities
-
-* `users`
-* `items`
-* `lost_reports`
-* `found_reports`
-* `claims`
-
-### Key Design Principles
-
-* Primary keys for unique identification
-* Foreign keys for referential integrity
-* ENUM-based status (`lost`, `found`, `claimed`)
-* Normalized schema to reduce redundancy
-* Controlled claim verification workflow
-
----
-
-## 4. Verification Workflow
-
-1. A user reports an item as **lost**
-2. Another user reports the item as **found**
-3. Owner submits a **claim request**
-4. Admin reviews the request
-5. If approved, item status becomes **claimed**
-
----
-
-## Sample SQL Operations
-
-### View lost items
+## Example Operations
 
 ```sql
+-- View lost items
 SELECT * FROM items WHERE status = 'lost';
-```
 
-### View pending claims
-
-```sql
+-- View pending claims
 SELECT * FROM claims WHERE status = 'requested';
-```
 
-### Approve a claim
-
-```sql
+-- Approve a claim
 UPDATE claims
 SET status = 'approved'
 WHERE claim_id = 1;
@@ -160,36 +203,22 @@ WHERE claim_id = 1;
 
 ---
 
-## Technologies Used
+## Tech Stack
 
-* MySQL / MariaDB
-* Node.js (Express)
-* HTML, CSS, JavaScript
-* Git & GitHub
+* **Database:** MySQL / MariaDB
+* **Backend:** Node.js (Express)
+* **Frontend:** HTML, CSS, JavaScript
+* **Version Control:** Git & GitHub
 
 ---
 
 ## Important Notes
 
 * Ensure MySQL is running before starting backend
-* Update database credentials in `backend/db.js` if needed
-* Do NOT upload `.env` or sensitive credentials
-
+* Update credentials in `backend/db.js` if needed
 ---
 
-## Scope
-
-This project focuses on:
-
-* Database design
-* Schema implementation
-* SQL queries and workflows
-
-Frontend and backend are minimal and only for demonstration purposes.
-
----
-
-## Authors
+## Contributors
 
 * Paarth Jawaharani
 * Pranav Jain
