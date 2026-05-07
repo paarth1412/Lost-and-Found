@@ -212,12 +212,6 @@ WHERE claim_id = 1;
 
 ---
 
-## Important Notes
-
-* Ensure MySQL is running before starting backend
-* Update credentials in `backend/db.js` if needed
----
-
 ## Contributors
 
 * Paarth Jawaharani
